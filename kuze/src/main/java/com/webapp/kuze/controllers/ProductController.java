@@ -4,6 +4,8 @@ import com.webapp.kuze.model.Product;
 import com.webapp.kuze.model.dtos.ProductDto;
 import com.webapp.kuze.model.eceptions.ProductNotFoundException;
 import com.webapp.kuze.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +28,7 @@ public class ProductController {
         return productService.findAll();
     }
 
-    @GetMapping("/{code}")
-    public ResponseEntity<Product> findByCode(@PathVariable Long code) {
-        Product product=this.productService.getProductByCode(code).orElseThrow(()->new ProductNotFoundException());
 
-        return ResponseEntity.ok(product);
-
-    }
 
 
     @DeleteMapping("/{code}")
@@ -61,5 +57,24 @@ public class ProductController {
         }
         Product product=this.productService.saveProduct(productDto);
         return ResponseEntity.ok(product);
+    }
+
+    @GetMapping("/pagination")
+    public Page<Product> findAllWithPagination(Pageable pageable) {
+        return this.productService.getAllPaged(pageable);
+    }
+
+    @GetMapping("/search")
+    public List<Product> search(@RequestParam String keyword) {
+        return productService.findAllByDescriptionContainingIgnoreCase(keyword);
+    }
+
+
+    @GetMapping("/{code}")
+    public ResponseEntity<Product> findByCode(@PathVariable Long code) {
+        Product product=this.productService.getProductByCode(code).orElseThrow(()->new ProductNotFoundException());
+
+        return ResponseEntity.ok(product);
+
     }
 }

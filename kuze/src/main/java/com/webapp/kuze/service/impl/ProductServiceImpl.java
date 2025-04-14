@@ -5,6 +5,8 @@ import com.webapp.kuze.model.dtos.ProductDto;
 import com.webapp.kuze.model.eceptions.ProductNotFoundException;
 import com.webapp.kuze.repository.ProductRepository;
 import com.webapp.kuze.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,5 +76,10 @@ public class ProductServiceImpl  implements ProductService {
         existingProduct.setUnitOfMeasure(productDto.getUnitOfMeasure());
         existingProduct.setPrice(productDto.getPrice());
         return productRepository.save(existingProduct);
+    }
+
+    @Override
+    public Page<Product> getAllPaged(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }
